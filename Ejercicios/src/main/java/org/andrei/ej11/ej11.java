@@ -1,4 +1,4 @@
-package org.andrei.ej10;
+package org.andrei.ej11;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,28 +9,25 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-
-
-
-@WebServlet("/ej10")
-public class ej10 extends HttpServlet {
+@WebServlet("/ej11")
+public class ej11 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-   
-	
+ 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter pw=response.getWriter();
-	
-			pw.println("<form method=\"post\">");
-			pw.println("Nombre:");
-			pw.println("<input type=\"text\" name=\"nombre\"> ");
-			pw.println("<br>");
-			pw.println("Contraseña:");
-			pw.println("<input type=\"password\" name=\"pwd\"> ");
-			pw.println("<br>");
-			pw.println("<input type=\"submit\">");
-			pw.println("</form>");
+		pw.println("<form method=\"post\">");
+		pw.println("Nombre:");
+		pw.println("<input type=\"text\" name=\"nombre\"> ");
+		pw.println("<br>");
+		pw.println("Contraseña:");
+		pw.println("<input type=\"password\" name=\"pwd\"> ");
+		pw.println("<br>");
+		pw.println("<input type=\"submit\">");
+		pw.println("</form>");
+
 	}
 
 	
@@ -42,6 +39,7 @@ public class ej10 extends HttpServlet {
 		if((nombre.equals("Andrei")&&pwd.equals("aa"))||(nombre.equals("Juan")&&pwd.equals("aa"))) {
 			Cookie[] cs= request.getCookies();
 			String valor=obtenerCookie(nombre,cs);
+			
 			pw.println("Bienvenido "+nombre);
 			if(valor==null) {
 			pw.println("Es la primera vez que te vemos");	
@@ -57,10 +55,20 @@ public class ej10 extends HttpServlet {
 			}
 	
 			pw.println(""
-					+"<form action=\"/Ejercicios/ej10logout\">"
+					+"<form action=\"/Ejercicios/ej11logout\">"
 					+"<input type=\"submit\" value=\"Logout\"/>"
 					+"<input type=\"hidden\" name=\"nombre\" value=\""+nombre+"\" />"
 					+"</form>");
+		HttpSession s=request.getSession(true);
+		if(s.getAttribute(nombre)==null) {
+			s.setAttribute(nombre,2);
+			pw.println("Es tu primera visita");
+		}else {
+			int cont=(Integer)s.getAttribute(nombre);
+		pw.println("Es tu visita nº "+cont);
+		s.setAttribute(nombre,cont+1);
+		}
+		
 		}else {
 			pw.println("Credenciales incorrectas");
 		}
@@ -78,5 +86,4 @@ public class ej10 extends HttpServlet {
 		}
 		return valor;
 	}
-
 }
